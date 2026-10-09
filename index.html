@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ListingRadarBpn | Digital Employee</title>
+<style>
+  :root{--bg:#07070f;--panel:#0e0e1c;--cyan:#00f0ff;--pink:#ff2bd6;--green:#39ff88;--text:#d8e2ff;--muted:#7d86a8}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:"Courier New",ui-monospace,monospace;line-height:1.6;
+    background-image:linear-gradient(rgba(0,240,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.04) 1px,transparent 1px);
+    background-size:40px 40px}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+  section{padding:60px 0}
+  h2{font-size:1.6rem;color:var(--cyan);text-shadow:0 0 12px var(--cyan);margin-bottom:8px;text-transform:uppercase;letter-spacing:2px}
+  .sub{color:var(--muted);margin-bottom:30px}
+
+  /* HERO */
+  .hero{text-align:center;padding:80px 0 50px}
+  .avatar{width:110px;height:110px;margin:0 auto 20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3.2rem;
+    border:2px solid var(--cyan);box-shadow:0 0 25px var(--cyan),inset 0 0 20px rgba(0,240,255,.3);background:var(--panel);animation:pulse 2.5s infinite}
+  @keyframes pulse{50%{box-shadow:0 0 45px var(--pink),inset 0 0 25px rgba(255,43,214,.4);border-color:var(--pink)}}
+  .badge{display:inline-block;padding:6px 16px;border:1px solid var(--green);border-radius:30px;color:var(--green);font-size:.85rem;
+    box-shadow:0 0 12px rgba(57,255,136,.4);margin-bottom:20px;animation:blink 2s infinite}
+  @keyframes blink{50%{opacity:.6}}
+  .hero h1{font-size:clamp(2rem,7vw,3.8rem);color:#fff;letter-spacing:2px;
+    text-shadow:2px 0 var(--pink),-2px 0 var(--cyan)}
+  .hero h1 span{color:var(--cyan)}
+  .tagline{max-width:640px;margin:18px auto 0;color:var(--text);font-size:1.05rem}
+
+  /* PROBLEM VS SOLUTION */
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .card{background:var(--panel);padding:24px;border-radius:10px;border:1px solid #23233d}
+  .chaos{border-color:var(--pink);box-shadow:0 0 18px rgba(255,43,214,.2)}
+  .solution{border-color:var(--cyan);box-shadow:0 0 18px rgba(0,240,255,.2)}
+  .card h3{margin-bottom:14px;text-transform:uppercase;letter-spacing:1px}
+  .chaos h3{color:var(--pink)}
+  .solution h3{color:var(--cyan)}
+  .card ul{list-style:none}
+  .card li{padding:8px 0 8px 26px;position:relative;border-bottom:1px dashed #23233d}
+  .card li:last-child{border:none}
+  .chaos li::before{content:"✖";position:absolute;left:0;color:var(--pink)}
+  .solution li::before{content:"✔";position:absolute;left:0;color:var(--green)}
+
+  /* CAPABILITIES */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .cap{background:var(--panel);padding:26px;border-radius:10px;border:1px solid #23233d;transition:.3s}
+  .cap:hover{transform:translateY(-6px);border-color:var(--cyan);box-shadow:0 0 22px rgba(0,240,255,.35)}
+  .cap .ico{font-size:2.2rem;margin-bottom:10px}
+  .cap h3{color:var(--cyan);margin-bottom:8px}
+  .cap p{color:var(--muted);font-size:.92rem}
+
+  /* SIMULATION */
+  .sim{background:var(--panel);border:1px solid var(--cyan);border-radius:12px;box-shadow:0 0 25px rgba(0,240,255,.25);overflow:hidden}
+  .sim-head{padding:12px 18px;background:#0a0a16;border-bottom:1px solid #23233d;color:var(--green);font-size:.85rem}
+  .chat{height:340px;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px}
+  .msg{max-width:85%;padding:10px 14px;border-radius:10px;font-size:.92rem;animation:fade .3s}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}}
+  .msg.user{align-self:flex-end;background:rgba(255,43,214,.15);border:1px solid var(--pink)}
+  .msg.bot{align-self:flex-start;background:rgba(0,240,255,.1);border:1px solid var(--cyan)}
+  .msg.hint{align-self:center;color:var(--muted);background:none;border:none;text-align:center}
+  .typing span{display:inline-block;width:7px;height:7px;margin:0 2px;background:var(--cyan);border-radius:50%;animation:dot 1s infinite}
+  .typing span:nth-child(2){animation-delay:.2s}
+  .typing span:nth-child(3){animation-delay:.4s}
+  @keyframes dot{50%{transform:translateY(-6px);opacity:.4}}
+  .btns{display:flex;flex-wrap:wrap;gap:10px;padding:14px 18px;border-top:1px solid #23233d;background:#0a0a16}
+  .btns button{flex:1;min-width:180px;padding:10px;background:transparent;color:var(--cyan);border:1px solid var(--cyan);
+    border-radius:6px;font-family:inherit;cursor:pointer;transition:.25s}
+  .btns button:hover:not(:disabled){background:var(--cyan);color:#000;box-shadow:0 0 15px var(--cyan)}
+  .btns button:disabled{opacity:.4;cursor:not-allowed}
+
+  /* FOOTER */
+  footer{text-align:center;padding:70px 0 40px;border-top:1px solid #23233d}
+  footer h2{color:#fff}
+  .cta{display:inline-block;margin:20px 0 40px;padding:16px 38px;font-size:1.1rem;font-weight:bold;color:#000;text-decoration:none;
+    background:linear-gradient(90deg,var(--cyan),var(--pink));border-radius:50px;box-shadow:0 0 30px rgba(255,43,214,.6);transition:.3s;animation:glow 2s infinite}
+  @keyframes glow{50%{box-shadow:0 0 45px rgba(0,240,255,.8)}}
+  .cta:hover{transform:scale(1.07)}
+  .credit{color:var(--muted);font-size:.85rem}
+
+  @media(max-width:760px){
+    .compare,.grid3{grid-template-columns:1fr}
+    section{padding:40px 0}
+    .hero{padding:50px 0 30px}
+  }
+</style>
+</head>
+<body>
+
+<!-- 1. HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div class="avatar">📡</div>
+    <div class="badge">🟢 Status: Active &amp; Ready 24/7</div>
+    <h1>Listing<span>Radar</span>Bpn</h1>
+    <p class="tagline">AI Asisten yang mencari listingan <b>high demand</b> di wilayah Balikpapan dan langsung menghubungkan Anda dengan owner-nya, siap dihubungi kapan saja.</p>
+  </div>
+</header>
+
+<!-- 2. PROBLEM & SOLUTION -->
+<section>
+  <div class="wrap">
+    <h2>// Chaos vs Solution</h2>
+    <p class="sub">Dari proses manual yang melelahkan menjadi alur otomatis yang terarah.</p>
+    <div class="compare">
+      <div class="card chaos">
+        <h3>⚠ The Chaos</h3>
+        <ul>
+          <li>Mencari listingan high demand di Balikpapan secara manual memakan waktu.</li>
+          <li>Nomor owner tersebar di sosmed &amp; Google, sulit dilacak satu per satu.</li>
+          <li>Izin listing harus dikejar lewat telepon, tanpa koneksi langsung.</li>
+          <li>Listing yang sudah dapat izin tidak tercatat rapi.</li>
+        </ul>
+      </div>
+      <div class="card solution">
+        <h3>⚡ The Solution</h3>
+        <ul>
+          <li>AI memindai listingan high demand wilayah Balikpapan secara otomatis.</li>
+          <li>Nomor owner ditemukan dari internet (sosmed &amp; Google) dan siap dihubungi.</li>
+          <li>Koneksi langsung ke owner untuk meminta izin listing.</li>
+          <li>Listing berizin otomatis tersinkron ke Google Sheet.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. CORE CAPABILITIES -->
+<section>
+  <div class="wrap">
+    <h2>// Core Capabilities</h2>
+    <p class="sub">Tiga kemampuan utama ListingRadarBpn.</p>
+    <div class="grid3">
+      <div class="cap"><div class="ico">🔍</div><h3>Hunt High-Demand Listing</h3><p>Mencari properti paling diminati di Balikpapan dari berbagai sumber online.</p></div>
+      <div class="cap"><div class="ico">📞</div><h3>Direct Owner Connect</h3><p>Menemukan nomor owner dari sosmed &amp; Google, lalu menyambungkan Anda langsung untuk izin listing.</p></div>
+      <div class="cap"><div class="ico">📊</div><h3>Google Sheet Sync</h3><p>Listing yang sudah mendapat izin otomatis tercatat rapi di Google Sheet Anda.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. INTERACTIVE SIMULATION -->
+<section>
+  <div class="wrap">
+    <h2>// Live Simulation</h2>
+    <p class="sub">Klik salah satu skenario untuk melihat ListingRadarBpn bekerja.</p>
+    <div class="sim">
+      <div class="sim-head">● ListingRadarBpn · online</div>
+      <div class="chat" id="chat">
+        <div class="msg hint">Pilih skenario di bawah untuk memulai percakapan 👇</div>
+      </div>
+      <div class="btns">
+        <button data-s="0">🔍 Cari listing high demand</button>
+        <button data-s="1">📞 Hubungi owner</button>
+        <button data-s="2">📊 Simpan ke Google Sheet</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. FOOTER & CTA -->
+<footer>
+  <div class="wrap">
+    <h2>Siap Menemukan Listing Berikutnya?</h2>
+    <a class="cta" href="https://wa.me/62895709721313" target="_blank" rel="noopener">💬 Hubungi via WhatsApp</a>
+    <p class="credit">Built with AI · AI Builder Bootcamp Showcase</p>
+  </div>
+</footer>
+
+<script>
+  const scenarios = [
+    {
+      user: "Carikan listing rumah high demand di Balikpapan dong.",
+      bot: "Scan selesai ✅ Ditemukan <b>3 listing high demand</b>:<br>1. Rumah di Balikpapan Baru, banyak dicari<br>2. Ruko di Klandasan, traffic tinggi<br>3. Rumah di Batakan, harga kompetitif<br>Mau saya carikan kontak owner-nya?"
+    },
+    {
+      user: "Ya, cari kontak owner listing nomor 1.",
+      bot: "Kontak owner ditemukan dari sosmed &amp; Google 📞<br>Nomor siap dihubungi langsung untuk meminta <b>izin listing</b>. Saya sudah menyiapkan naskah pembuka singkat agar Anda bisa langsung menelepon."
+    },
+    {
+      user: "Owner setuju! Simpan listing ini ya.",
+      bot: "Siap! Listing berstatus <b>Izin Disetujui</b> sudah ditambahkan ke Google Sheet Anda 📊<br>Kolom tercatat: lokasi, harga, nama owner, kontak, tanggal izin."
+    }
+  ];
+
+  const chat = document.getElementById("chat");
+  const buttons = document.querySelectorAll(".btns button");
+
+  function addMsg(html, cls) {
+    const el = document.createElement("div");
+    el.className = "msg " + cls;
+    el.innerHTML = html;
+    chat.appendChild(el);
+    chat.scrollTop = chat.scrollHeight;
+    return el;
+  }
+
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+
+  buttons.forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const s = scenarios[btn.dataset.s];
+      buttons.forEach(b => b.disabled = true);
+      const hint = chat.querySelector(".hint");
+      if (hint) hint.remove();
+
+      addMsg(s.user, "user");
+      await wait(500);
+      const typing = addMsg('<div class="typing"><span></span><span></span><span></span></div>', "bot");
+      await wait(1600);
+      typing.remove();
+      addMsg(s.bot, "bot");
+
+      buttons.forEach(b => b.disabled = false);
+    });
+  });
+</script>
+</body>
+</html>
