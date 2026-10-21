@@ -70,6 +70,19 @@
   .btns button:hover:not(:disabled){background:var(--cyan);color:#000;box-shadow:0 0 15px var(--cyan)}
   .btns button:disabled{opacity:.4;cursor:not-allowed}
 
+  /* DATA TABLE (Supabase) */
+  .table-wrap{background:var(--panel);border:1px solid var(--cyan);border-radius:12px;box-shadow:0 0 25px rgba(0,240,255,.25);overflow-x:auto}
+  #places{width:100%;border-collapse:collapse;font-size:.9rem;min-width:640px}
+  #places th{text-align:left;padding:12px 16px;background:#0a0a16;color:var(--green);border-bottom:1px solid #23233d;white-space:nowrap}
+  #places td{padding:12px 16px;border-bottom:1px dashed #23233d;vertical-align:top}
+  #places tbody tr:last-child td{border-bottom:none}
+  #places tbody tr:hover{background:rgba(0,240,255,.06)}
+  #places td:first-child{color:var(--muted);width:60px}
+  #places td:nth-child(2){color:#fff;min-width:180px}
+  #places td:nth-child(3){color:var(--muted);font-size:.85rem}
+  #places a{color:var(--cyan);text-decoration:none;border-bottom:1px solid var(--cyan);white-space:nowrap}
+  #places a:hover{color:var(--pink);border-color:var(--pink)}
+
   /* FOOTER */
   footer{text-align:center;padding:70px 0 40px;border-top:1px solid #23233d}
   footer h2{color:#fff}
@@ -158,7 +171,25 @@
   </div>
 </section>
 
-<!-- 5. FOOTER & CTA -->
+<!-- 5. LIVE DATA DARI SUPABASE -->
+<section>
+  <div class="wrap">
+    <h2>// Data Listing Terbaru</h2>
+    <p class="sub">Hasil pencarian terbaru yang tersimpan di database, diperbarui otomatis.</p>
+    <div class="table-wrap">
+      <table id="places">
+        <thead>
+          <tr><th>ID</th><th>Judul</th><th>Ringkasan</th><th>Link</th></tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="4">Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 6. FOOTER & CTA -->
 <footer>
   <div class="wrap">
     <h2>Siap Menemukan Listing Berikutnya?</h2>
@@ -168,6 +199,7 @@
 </footer>
 
 <script>
+  /* ===== SIMULASI CHAT ===== */
   const scenarios = [
     {
       user: "Carikan listing rumah high demand di Balikpapan dong.",
@@ -214,6 +246,58 @@
       buttons.forEach(b => b.disabled = false);
     });
   });
+
+  /* ===== DATA DARI SUPABASE ===== */
+  const SUPABASE_URL = "https://ncfpyujypfzdwubgsvih.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_bWFu3pIL9iKGJAUWdQLjmw_qgDRCHmW";
+
+  async function loadPlaces() {
+    const tbody = document.querySelector('#places tbody');
+    try {
+      // Mengambil data dari tabel 'first project n8n' diurutkan berdasarkan id terkini
+      const res = await fetch(
+        SUPABASE_URL + '/rest/v1/first%20project%20n8n?select=*&order=id.desc&limit=100',
+        { headers: { apikey: SUPABASE_KEY } }
+      );
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const rows = await res.json();
+
+      tbody.replaceChildren();
+
+      for (const p of rows) {
+        const tr = document.createElement('tr');
+
+        // Menampilkan kolom id, title, dan snippet
+        for (const v of [p.id, p.title, p.snippet]) {
+          const td = document.createElement('td');
+          td.textContent = v ?? '-';
+          tr.appendChild(td);
+        }
+
+        // Menampilkan tautan URL
+        const td = document.createElement('td');
+        if (p.url && p.url.startsWith('http')) {
+          const a = document.createElement('a');
+          a.href = p.url;
+          a.target = '_blank';
+          a.rel = 'noopener';
+          a.textContent = 'Buka Link';
+          td.appendChild(a);
+        } else {
+          td.textContent = '-';
+        }
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+      }
+
+      if (!rows.length) tbody.innerHTML = '<tr><td colspan="4">Belum ada data.</td></tr>';
+    } catch (e) {
+      tbody.innerHTML = '<tr><td colspan="4">Gagal memuat data.</td></tr>';
+      console.error(e);
+    }
+  }
+
+  loadPlaces();
 </script>
 </body>
 </html>
